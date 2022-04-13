@@ -21,22 +21,59 @@ public class CarController : MonoBehaviour
     float brake = 0.0f;
 
     // Use this for initialization
-    void Start()
-    {
 
-    }
 
     // Update is called once per frame
+
+    void Update()
+
+    {
+        wheelFrontLeft.gameObject.transform.Rotate(0, wheelFrontLeft.rpm / 60 * 360 * Time.deltaTime, 0);
+        wheelFrontRight.gameObject.transform.Rotate(0, wheelFrontRight.rpm / 60 * 360 * Time.deltaTime, 0);
+        wheelBackLeft.gameObject.transform.Rotate(0, wheelBackLeft.rpm / 60 * 360 * Time.deltaTime, 0);
+        wheelBackRight.gameObject.transform.Rotate(0, wheelBackRight.rpm / 60 * 360 * Time.deltaTime, 0);
+    }
+
     void FixedUpdate()
     {
-        steer = Mathf.Clamp(Input.GetAxis("Horizontal"), -1, 1);
-        motor = Mathf.Clamp(Input.GetAxis("Vertical"), 0, 1);
-        brake = -1 * Mathf.Clamp(Input.GetAxis("Vertical"), -1, 0);
 
-        wheelBackLeft.motorTorque = -1 * motorMax * motor;
-        wheelBackRight.motorTorque = -1 * motorMax * motor;
-        wheelBackLeft.brakeTorque = brakeMax * brake;
-        wheelBackRight.brakeTorque = brakeMax * brake;
+            motor = Mathf.Clamp(Input.GetAxis("Vertical"), 0, 1);
+        steer = Mathf.Clamp(Input.GetAxis("Horizontal"), -1, 1);
+
+        /*determines whether we should reverse or not!
+        If we do click the specific key to reverse, then our car will gradually slow down, i think. */
+
+        if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
+        {
+            //simply reverse the car.
+            Debug.LogWarning("reversing car!");
+            //minusing the motor so we get a positive value
+            motor = Mathf.Clamp(-Input.GetAxis("Vertical"), 0, 1);
+            wheelBackLeft.motorTorque = 1 * motorMax * motor;
+            wheelBackRight.motorTorque = 1 * motorMax * motor;
+
+        }
+        else if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
+        {
+            //simply normalise the car.
+            Debug.LogWarning("Normalising car.");
+            wheelBackLeft.motorTorque = -1 * motorMax * motor;
+            wheelBackRight.motorTorque = -1 * motorMax * motor;
+
+
+        }
+
+
+        if(Input.GetKey(KeyCode.Space))
+        {
+            //we brake if we press [Space]
+            wheelBackLeft.brakeTorque = brakeMax;
+            wheelBackRight.brakeTorque = brakeMax;
+        } else
+        {
+            wheelBackLeft.brakeTorque = 0;
+            wheelBackRight.brakeTorque = 0;
+        }
 
         wheelFrontLeft.steerAngle = steerMax * steer;
         wheelFrontRight.steerAngle = steerMax * steer;
