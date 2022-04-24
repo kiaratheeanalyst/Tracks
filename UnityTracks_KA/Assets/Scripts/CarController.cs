@@ -19,6 +19,8 @@ public class CarController : MonoBehaviour
     float steer = 0.0f;
     float motor = 0.0f;
     float brake = 0.0f;
+    public float shiftMultiplier = 3f;
+    public float controlMultiplier = 0.7f;
 
     // Use this for initialization
 
@@ -43,6 +45,7 @@ public class CarController : MonoBehaviour
         /*determines whether we should reverse or not!
         If we do click the specific key to reverse, then our car will gradually slow down, i think. */
 
+
         if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
         {
             //simply reverse the car.
@@ -63,8 +66,20 @@ public class CarController : MonoBehaviour
 
         }
 
+        if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+        {
+            motor = motor * shiftMultiplier;
+        }
 
-        if(Input.GetKey(KeyCode.Space))
+        if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
+        {
+            motor = motor * controlMultiplier;
+        }
+
+
+
+
+        if (Input.GetKey(KeyCode.Space))
         {
             //we brake if we press [Space]
             wheelBackLeft.brakeTorque = brakeMax;
